@@ -11,3 +11,5 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('industries', Api\IndustryController::class);
 Route::apiResource('students', Api\StudentController::class);
 Route::apiResource('teachers', Api\TeacherController::class);
+Route::apiResource('internships', Api\InternshipController::class);
+Route::apiResource('internship-requests', Api\InternshipRequestController::class);
