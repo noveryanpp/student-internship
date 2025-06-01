@@ -8,7 +8,8 @@ use Livewire\Component;
 
 class User extends Component
 {
-    public string $studentImage;
+    public $studentImage;
+
     public function logOut()
     {
         auth()->logout();
