@@ -14,7 +14,6 @@ use Livewire\Component;
 #[Layout('components.layouts.auth')]
 class Register extends Component
 {
-    public string $name = '';
 
     public string $email = '';
 
@@ -28,13 +27,13 @@ class Register extends Component
     public function register(): void
     {
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class, 'exists:'.Student::class.',email'],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ],[
             'email.exists' => 'This email is not registered as a student.',
         ]);
 
+        $validated['name'] = Student::where('email', $validated['email'])->first()->name;
 
         $validated['password'] = Hash::make($validated['password']);
 

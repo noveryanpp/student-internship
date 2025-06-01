@@ -7,10 +7,12 @@ use App\Filament\Imports\StudentImporter;
 use App\Filament\Resources\StudentResource\Pages;
 use App\Filament\Resources\StudentResource\RelationManagers;
 use App\Models\Student;
+use App\Models\User;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Actions\ImportAction;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -40,7 +42,7 @@ class StudentResource extends Resource
                 Forms\Components\FileUpload::make('image')
                     ->image()
                     ->disk('public')
-                    ->directory('students')
+                    ->directory('storage'),
             ]);
     }
 
@@ -48,6 +50,10 @@ class StudentResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->disk('public')
+                    ->circular()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
@@ -81,7 +87,8 @@ class StudentResource extends Resource
             ])
             ->headerActions([
                 Tables\Actions\ImportAction::make()
-                    ->importer(StudentImporter::class),
+                    ->importer(StudentImporter::class)
+                    ->visible(fn () => auth()->user()?->hasRole('super_admin')),
                 Tables\Actions\ExportAction::make()
                     ->exporter(StudentExporter::class)
                     ->formats([
@@ -91,7 +98,28 @@ class StudentResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function ($records, $action) {
+                            $blocked = $records->filter(function ($record) {
+                                return $record->internships()->count() > 0 || $record->internship_requests()->count() > 0 || User::where('email', $record->email)->count() > 0;
+                            });
+
+                            if ($blocked->isNotEmpty()) {
+                                Notification::make()
+                                    ->title('Some students cannot be deleted')
+                                    ->body('Students: ' . $blocked->pluck('name')->implode(', ') . ' have related data.')
+                                    ->danger()
+                                    ->send();
+
+                                $deletable = $records->diff($blocked);
+
+                                if ($deletable->isEmpty()) {
+                                    $action->cancel();
+                                } else {
+                                    $action->records($deletable);
+                                }
+                            }
+                        }),
                 ]),
                 Tables\Actions\ExportBulkAction::make()
                     ->exporter(StudentExporter::class)

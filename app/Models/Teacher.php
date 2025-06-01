@@ -20,6 +20,15 @@ class Teacher extends Model
         'email',
     ];
 
+    public static function booted()
+    {
+        static::deleting(function ($teacher) {
+            if($teacher->internships()->count() > 0) {
+                throw new \Exception('Cannot delete a teacher with internships');
+            }
+        });
+    }
+
     public function internships()
     {
         return $this->hasMany(Internship::class);

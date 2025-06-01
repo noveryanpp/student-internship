@@ -10,6 +10,7 @@ use App\Models\Teacher;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -73,7 +74,8 @@ class TeacherResource extends Resource
             ])
             ->headerActions([
                 Tables\Actions\ImportAction::make()
-                    ->importer(TeacherImporter::class),
+                    ->importer(TeacherImporter::class)
+                    ->visible(fn () => auth()->user()?->hasRole('super_admin')),
                 Tables\Actions\ExportAction::make()
                     ->exporter(TeacherExporter::class)
                     ->formats([
@@ -83,7 +85,28 @@ class TeacherResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function ($records, $action) {
+                            $blocked = $records->filter(function ($record) {
+                                return $record->internships()->count() > 0;
+                            });
+
+                            if ($blocked->isNotEmpty()) {
+                                Notification::make()
+                                    ->title('Some teachers cannot be deleted')
+                                    ->body('Teachers: ' . $blocked->pluck('name')->implode(', ') . ' have related data.')
+                                    ->danger()
+                                    ->send();
+
+                                $deletable = $records->diff($blocked);
+
+                                if ($deletable->isEmpty()) {
+                                    $action->cancel();
+                                } else {
+                                    $action->records($deletable);
+                                }
+                            }
+                        }),
                 ]),
                 Tables\Actions\ExportBulkAction::make()
                     ->exporter(TeacherExporter::class)

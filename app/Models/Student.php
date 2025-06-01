@@ -22,6 +22,18 @@ class Student extends Model
         'internship_status',
     ];
 
+    public static function booted()
+    {
+        static::deleting(function ($student) {
+            if($student->internships()->count() > 0) {
+                throw new \Exception('Cannot delete a student with internships');
+            }
+            if($student->internship_requests()->count() > 0) {
+                throw new \Exception('Cannot delete a student with internship requests');
+            }
+        });
+    }
+
     public function internships()
     {
         return $this->hasMany(Internship::class);

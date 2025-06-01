@@ -31,12 +31,14 @@ class InternshipResource extends Resource
                     ->relationship('student', 'name')
                     ->required()
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->disabled(),
                 Forms\Components\Select::make('industry_id')
                     ->relationship('industry', 'name')
                     ->required()
                     ->searchable()
-                    ->preload(),
+                    ->preload()
+                    ->disabled(),
                 Forms\Components\Select::make('teacher_id')
                     ->relationship('teacher', 'name')
                     ->required()
@@ -99,9 +101,6 @@ class InternshipResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
                 Tables\Actions\ExportBulkAction::make()
                     ->exporter(InternshipExporter::class)
                     ->formats([
