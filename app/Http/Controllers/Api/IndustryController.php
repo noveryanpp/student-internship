@@ -15,7 +15,7 @@ class IndustryController extends Controller
      */
     public function index()
     {
-        $industries = Industry::latest()->paginate(10);
+        $industries = Industry::latest()->get();
 
         return new IndustryResource(true, 'Industries Data Fetched Successfully', $industries);
     }
@@ -63,6 +63,13 @@ class IndustryController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $industry = Industry::find($id);
+
+        if(!$industry)
+        {
+            return response()->json(['message' => 'Industry Not Found'], 404);
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'field' => 'required|string|max:255',
@@ -74,13 +81,6 @@ class IndustryController extends Controller
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
-        }
-
-        $industry = Industry::find($id);
-
-        if(!$industry)
-        {
-            return response()->json(['message' => 'Industry Not Found'], 404);
         }
 
         $industry->update($request->all());
@@ -100,7 +100,7 @@ class IndustryController extends Controller
             return response()->json(['message' => 'Industry Not Found'], 404);
         }
 
-        if($industry->internships()->count() > 0 && $industry->internship_requests()->count() > 0) {
+        if($industry->internships()->count() > 0 || $industry->internship_requests()->count() > 0) {
             return response()->json(['message' => 'Cannot delete an industry with internships data'], 400);
         }
 

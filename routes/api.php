@@ -9,3 +9,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::apiResource('industries', Api\IndustryController::class);
+Route::apiResource('students', Api\StudentController::class);
+Route::apiResource('teachers', Api\TeacherController::class);
