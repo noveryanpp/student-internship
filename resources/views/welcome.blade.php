@@ -106,7 +106,7 @@
                     </ul>
                 </div>
                 <div class="bg-white dark:bg-[#161615] relative lg:-ms-px -mb-px lg:mb-0 rounded-t-lg lg:rounded-t-none lg:rounded-e-lg! aspect-[335/376] lg:aspect-auto w-full lg:w-[438px] shrink-0 overflow-visible">
-                    <img src="{{ asset('storage/images/illustration.png') }}" alt="hero" class="w-full object-cover">
+                    <img src="{{ asset('images/illustration.png') }}" alt="hero" class="w-full object-cover">
                 </div>
             </main>
         </div>

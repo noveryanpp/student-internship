@@ -42,7 +42,7 @@ class StudentResource extends Resource
                 Forms\Components\FileUpload::make('image')
                     ->image()
                     ->disk('public')
-                    ->directory('storage'),
+                    ->directory('images'),
             ]);
     }
 
