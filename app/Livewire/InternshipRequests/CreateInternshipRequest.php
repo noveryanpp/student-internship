@@ -36,8 +36,8 @@ class CreateInternshipRequest extends Component
                 'newIndustry.field' => 'required|string|max:255',
                 'newIndustry.address' => 'required|string|max:255',
                 'newIndustry.phone' => 'required|string|max:20',
-                'newIndustry.email' => 'required|email|max:255',
-                'newIndustry.website' => 'required|url|max:255',
+                'newIndustry.email' => 'email|max:255',
+                'newIndustry.website' => 'url|max:255',
             ]);
         }
 
