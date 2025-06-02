@@ -13,18 +13,18 @@ class StudentObserver
      */
     public function created(Student $student): void
     {
-        if (!User::where('email', $student->email)->exists()) {
-            try {
-                $user = User::create([
-                    'name' => $student->name,
-                    'email' => $student->email,
-                    'password' => Hash::make($student->nis),
-                ]);
-                $user->assignRole('student');
-            } catch (\Exception $e) {
-                \Log::error('User creation failed: ' . $e->getMessage());
-            }
-        }
+//        if (!User::where('email', $student->email)->exists()) {
+//            try {
+//                $user = User::create([
+//                    'name' => $student->name,
+//                    'email' => $student->email,
+//                    'password' => Hash::make($student->nis),
+//                ]);
+//                $user->assignRole('student');
+//            } catch (\Exception $e) {
+//                \Log::error('User creation failed: ' . $e->getMessage());
+//            }
+//        }
     }
 
     /**
@@ -46,7 +46,7 @@ class StudentObserver
      */
     public function deleted(Student $student): void
     {
-        User::where('email', $student->email)->delete();
+//        User::where('email', $student->email)->delete();
     }
 
     /**

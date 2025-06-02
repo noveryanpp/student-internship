@@ -58,9 +58,6 @@ class IndustryResource extends Resource
                 Tables\Columns\TextColumn::make('website')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable(),
             ])
             ->filters([
                 //

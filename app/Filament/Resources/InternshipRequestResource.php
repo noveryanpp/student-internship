@@ -31,7 +31,7 @@ class InternshipRequestResource extends Resource
 
     public static function form(Form $form): Form
     {
-        //
+        return $form;
     }
 
     public static function table(Table $table): Table
@@ -74,10 +74,10 @@ class InternshipRequestResource extends Resource
                 Tables\Filters\SelectFilter::make('student_internship_status')
                     ->label('Student\'s Internship Status')
                     ->options([
-                        1 => 'Already accepted',    // Or 'Yes'
-                        0 => 'Not accepted yet',  // Or 'No'
+                        true => 'Already accepted',
+                        false => 'Not accepted yet',
                     ])
-                    ->default(0)
+                    ->default(false)
                     ->query(function ($query, $state) {
                         return $query->whereHas('student', fn ($q) =>
                         $q->where('internship_status', $state)
@@ -112,7 +112,8 @@ class InternshipRequestResource extends Resource
 
                     })
                     ->requiresConfirmation(),
-            ]);
+            ])
+            ->recordUrl(fn () => null);
     }
 
     public static function getRelations(): array
