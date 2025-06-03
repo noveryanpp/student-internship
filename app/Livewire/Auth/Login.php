@@ -45,10 +45,12 @@ class Login extends Component
 
         $user = auth()->user()->fresh();
 
-        if ($user->hasRole('student')) {
-            $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
-        } else {
-            $this->redirectIntended(default: route('filament.admin.pages.dashboard'), navigate: true);
+        if($user){
+            if ($user->hasRole('student')) {
+                $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+            } else {
+                $this->redirectIntended(default: route('filament.admin.pages.dashboard'), navigate: true);
+            }
         }
     }
 
