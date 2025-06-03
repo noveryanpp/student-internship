@@ -37,12 +37,13 @@ class StudentImporter extends Importer
 
     public function resolveRecord(): ?Student
     {
-        $student = Student::firstOrNew([
-            'email' => $this->data['email'],
-        ]);
-        $student->fill($this->data);
-        $student->save();
-        return $student;
+//        $student = Student::firstOrNew([
+//            'email' => $this->data['email'],
+//        ]);
+//        $student->fill($this->data);
+//        $student->save();
+//        return $student;
+        return new Student();
     }
 
     public static function getCompletedNotificationBody(Import $import): string

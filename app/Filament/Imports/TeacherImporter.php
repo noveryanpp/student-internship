@@ -37,12 +37,7 @@ class TeacherImporter extends Importer
 
     public function resolveRecord(): ?Teacher
     {
-        $teacher = Teacher::firstOrNew([
-            'email' => $this->data['email'],
-        ]);
-        $teacher->fill($this->data);
-        $teacher->save();
-        return $teacher;
+        return new Teacher();
     }
 
     public static function getCompletedNotificationBody(Import $import): string
