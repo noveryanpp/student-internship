@@ -19,7 +19,7 @@ class ListIndustry extends Component
     public function render()
     {
         $industries = Industry::where('name', 'like', '%' . $this->search . '%')
-            ->paginate(15);
+            ->paginate(2);
 
         return view('livewire.industry.list-industry', [
             'industries' => $industries,
