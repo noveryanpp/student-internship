@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-//#[ObservedBy([TeacherObserver::class])]
+#[ObservedBy([TeacherObserver::class])]
 class Teacher extends Model
 {
     use HasFactory;

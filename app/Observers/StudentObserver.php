@@ -13,18 +13,11 @@ class StudentObserver
      */
     public function created(Student $student): void
     {
-//        if (!User::where('email', $student->email)->exists()) {
-//            try {
-//                $user = User::create([
-//                    'name' => $student->name,
-//                    'email' => $student->email,
-//                    'password' => Hash::make($student->nis),
-//                ]);
-//                $user->assignRole('student');
-//            } catch (\Exception $e) {
-//                \Log::error('User creation failed: ' . $e->getMessage());
-//            }
-//        }
+        $student->phone = ltrim($student->phone, '0');
+        if (!str_starts_with($student->phone, '+62')) {
+            $student->phone = '+62' . $student->phone;
+        }
+        $student->save();
     }
 
     /**
@@ -32,12 +25,26 @@ class StudentObserver
      */
     public function updated(Student $student): void
     {
-        $oldEmail = $student->getOriginal('email');
-        $user = User::where('email', $oldEmail)->first();
-        if ($user) {
-            $user->name = $student->name;
-            $user->email = $student->email;
-            $user->save();
+        if($student->isDirty('phone')){
+            $phone = ltrim($student->phone, '0');
+            if (!str_starts_with($phone, '+62')) {
+                $phone = '+62' . $phone;
+            }
+            if($student->phone != $phone){
+                $student->phone = $phone;
+                $student->save();
+            }
+
+        }
+
+        if($student->isDirty('email')){
+            $oldEmail = $student->getOriginal('email');
+            $user = User::where('email', $oldEmail)->first();
+            if ($user) {
+                $user->name = $student->name;
+                $user->email = $student->email;
+                $user->save();
+            }
         }
     }
 

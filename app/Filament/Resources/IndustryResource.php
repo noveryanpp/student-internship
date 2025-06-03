@@ -30,7 +30,9 @@ class IndustryResource extends Resource
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\TextInput::make('field')->required(),
                 Forms\Components\TextInput::make('address')->required(),
-                Forms\Components\TextInput::make('phone')->required(),
+                Forms\Components\TextInput::make('phone')
+                    ->required()
+                    ->prefix('+62'),
                 Forms\Components\TextInput::make('email'),
                 Forms\Components\TextInput::make('website'),
             ]);

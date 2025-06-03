@@ -35,7 +35,9 @@ class TeacherResource extends Resource
                         'F' => 'Female',
                     ]),
                 Forms\Components\TextInput::make('address')->required(),
-                Forms\Components\TextInput::make('phone')->required(),
+                Forms\Components\TextInput::make('phone')
+                    ->required()
+                    ->prefix('+62'),
                 Forms\Components\TextInput::make('email')->required(),
             ]);
     }
@@ -59,11 +61,11 @@ class TeacherResource extends Resource
                     ->formatStateUsing(function($state) {
                         return $state === 'M' ? 'Male' : ($state === 'F' ? 'Female' : $state);
                     }),
-                Tables\Columns\TextColumn::make('email')
+                Tables\Columns\TextColumn::make('phone')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                Tables\Columns\TextColumn::make('email')
+                    ->searchable()
                     ->sortable(),
             ])
             ->filters([

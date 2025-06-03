@@ -37,7 +37,9 @@ class StudentResource extends Resource
                         'F' => 'Female',
                     ]),
                 Forms\Components\TextInput::make('address')->required(),
-                Forms\Components\TextInput::make('phone')->required(),
+                Forms\Components\TextInput::make('phone')
+                    ->required()
+                    ->prefix('+62'),
                 Forms\Components\TextInput::make('email')->required(),
                 Forms\Components\FileUpload::make('image')
                     ->image()

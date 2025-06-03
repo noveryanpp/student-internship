@@ -13,18 +13,11 @@ class TeacherObserver
      */
     public function created(Teacher $teacher): void
     {
-        if (!User::where('email', $teacher->email)->exists()) {
-            try {
-                $user = User::create([
-                    'name' => $teacher->name,
-                    'email' => $teacher->email,
-                    'password' => Hash::make($teacher->nip),
-                ]);
-                $user->assignRole('teacher');
-            } catch (\Exception $e) {
-                \Log::error('User creation failed: ' . $e->getMessage());
-            }
+        $teacher->phone = ltrim($teacher->phone, '0');
+        if (!str_starts_with($teacher->phone, '+62')) {
+            $teacher->phone = '+62' . $teacher->phone;
         }
+        $teacher->save();
     }
 
     /**
@@ -32,12 +25,15 @@ class TeacherObserver
      */
     public function updated(Teacher $teacher): void
     {
-        $oldEmail = $teacher->getOriginal('email');
-        $user = User::where('email', $oldEmail)->first();
-        if ($user) {
-            $user->name = $teacher->name;
-            $user->email = $teacher->email;
-            $user->save();
+        if($teacher->isDirty('phone')){
+            $phone = ltrim($teacher->phone, '0');
+            if (!str_starts_with($phone, '+62')) {
+                $phone = '+62' . $phone;
+            }
+            if($teacher->phone != $phone){
+                $teacher->phone = $phone;
+                $teacher->save();
+            }
         }
     }
 
@@ -46,7 +42,7 @@ class TeacherObserver
      */
     public function deleted(Teacher $teacher): void
     {
-        User::where('email', $teacher->email)->delete();
+//        User::where('email', $teacher->email)->delete();
     }
 
     /**
